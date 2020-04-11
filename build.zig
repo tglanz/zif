@@ -1,8 +1,9 @@
-// no other way to import these things?
-// const {alias1, alias2} = @import("std").build.{Builder, LibExeObjStep};
 const debug = @import("std").debug;
-const Builder = @import("std").build.Builder;
-const LibExeObjStep = @import("std").build.LibExeObjStep;
+const builtin = @import("builtin");
+
+const std = @import("std");
+const Builder = std.build.Builder;
+const LibExeObjStep = std.build.LibExeObjStep;
 
 pub fn build(b: *Builder) void {
     const mode = b.standardReleaseOptions();
@@ -11,7 +12,13 @@ pub fn build(b: *Builder) void {
 
     exe.setBuildMode(mode);
 
-    link_with_raylib(exe);
+    switch (std.Target.current.os.tag) {
+        .linux => specificsForLinux(exe),
+        .windows => specificsForWindows(exe),
+        else => {},
+    }
+
+    linkWithRaylib(exe);
 
     const run = exe.run();
     run.step.dependOn(b.getInstallStep());
@@ -20,7 +27,19 @@ pub fn build(b: *Builder) void {
     exec_step.dependOn(&run.step);
 }
 
-fn link_with_raylib(step: *LibExeObjStep) void {
+fn specificsForWindows(step: *LibExeObjStep) void {
+    // TODO: copy dll to bin dir
+}
+
+fn specificsForLinux(step: *LibExeObjStep) void {
+    // support dynamic loading of shared objects
+    step.linkSystemLibrary("dl");
+
+    // not needed
+    // step.linkSystemLibrary("c");
+}
+
+fn linkWithRaylib(step: *LibExeObjStep) void {
     // lets link with raylib at external/raylib
     // it will probably be wiser to link with system's libraries - 
     // but for now, it's a good learning experience
@@ -29,10 +48,10 @@ fn link_with_raylib(step: *LibExeObjStep) void {
 
     // addLibPath adds to libs_paths which each correspond to -L
     // SEE: https://github.com/ziglang/zig/blob/master/lib/std/build.zig#L2075
-    step.addLibPath("./external/raylib/lib");
+    step.addLibPath("external/raylib/lib");
     step.linkSystemLibrary("raylib");
 
     // addIncludeDir adds to include_dirs which each correspond to -I
     // SEE: https://github.com/ziglang/zig/blob/master/lib/std/build.zig#L2057
-    step.addIncludeDir("./external/raylib/include");
+    step.addIncludeDir("external/raylib/include");
 }
