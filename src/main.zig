@@ -7,6 +7,12 @@ const WindowConfig = struct {
     width: u32,
     height: u32,
     title: []const u8,
+
+    const Default = WindowConfig {
+        .width = 800,
+        .height = 600,
+        .title = "zif",
+    };
 };
 
 const SpriteSheet = struct {
@@ -15,29 +21,29 @@ const SpriteSheet = struct {
     cols: usize,
     sprite_width: usize,
     sprite_height: usize,
-};
 
-pub fn main() void {
-
-    debug.warn("1\n", .{});
-
-    const window_config = WindowConfig {
-        .title = "zif",
-        .width = 800,
-        .height = 600,
-    };
-
-    debug.warn("2\n", .{});
-
-    const digits: SpriteSheet = .{
+    const Digits = SpriteSheet {
         .uri = "resources/spritesheets/digits.png",
         .rows = 4,
         .cols = 3,
         .sprite_width = 32,
         .sprite_height = 32,
     };
+};
 
-    debug.warn("3\n", .{});
+pub fn main() void {
+    debug.warn("window config: {}\n", .{WindowConfig.Default});
+    debug.warn("sprite sheet: {}\n", .{SpriteSheet.Digits});
 
-    c.rl.InitWindow(123, 123, "asd");
+    const vec2 = c.rl.Vector2 {
+        .x = 4,
+        .y = 5,
+    };
+
+    debug.warn("vector2: {}\n", .{vec2});
+
+    c.rl.InitWindow(
+        WindowConfig.Default.width,
+        WindowConfig.Default.height,
+        WindowConfig.Default.title.ptr);
 }
