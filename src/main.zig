@@ -69,10 +69,19 @@ pub fn main() void {
             .y = 0.0,
         }; 
 
+        const rect = c.rl.Rectangle {
+            .x = 0.0,
+            .y = 0.0,
+            .width = 10,
+            .height = 10,
+        };
+
+        c.rl.ZifDrawTexture(texture, 0, 0, 10, 10, 0, 0, tint);
+
         // Not compiling!
-        c.rl.DrawTextureV(texture, position, tint);
+        // c.rl.DrawTextureV(texture, position, tint);
         // But below will work
-        // c.rl.DrawTexture(texture, 0, 0, tint);
+        c.rl.DrawTexture(texture, 0, 0, tint);
  
         c.rl.EndDrawing();
     }

@@ -3,3 +3,8 @@ zig-cache/
 c-check/out
 c-check/main
 c-check/log
+
+external/compatibility/CMakeCache.txt
+external/compatibility/CMakeFiles/
+external/compatibility/MakeFile
+external/compatibility/cmake_install.cmake

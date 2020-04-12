@@ -18,6 +18,7 @@ pub fn build(b: *Builder) void {
         else => {},
     }
 
+    linkWithCompatibility(exe);
     linkWithRaylib(exe);
 
     const run = exe.run();
@@ -37,6 +38,12 @@ fn specificsForLinux(step: *LibExeObjStep) void {
 
     // not needed
     // step.linkSystemLibrary("c");
+}
+
+fn linkWithCompatibility(step: *LibExeObjStep) void {
+    step.addLibPath("external/compatibility/lib");
+    step.linkSystemLibrary("zif-compatibility");
+    step.addIncludeDir("external/compatibility/include");
 }
 
 fn linkWithRaylib(step: *LibExeObjStep) void {
