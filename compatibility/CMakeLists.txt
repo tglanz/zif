@@ -9,21 +9,18 @@ project(
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE Release)
 
+set(EXTERNAL_DIR ${PROJECT_SOURCE_DIR}/../external)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
-add_library(zif-compatibility SHARED
-    src/compatibility.c)
+file(GLOB_RECURSE source_files
+     "${PROJECT_SOURCE_DIR}/src/*.c")
+
+add_library(zif-compatibility SHARED ${source_files})
 
 target_include_directories(zif-compatibility PUBLIC
     ${PROJECT_SOURCE_DIR}/src/
-    ${PROJECT_SOURCE_DIR}/../external/raylib/include)
-
-# target_link_directories(zif-compatibility PUBLIC
-#     ${PROJECT_SOURCE_DIR}/../external/raylib/lib)
-
-# target_link_libraries(zif-compatibility PUBLIC
-#     raylib)
+    ${EXTERNAL_DIR}/raylib/include)
 
 add_custom_command(TARGET zif-compatibility
                    POST_BUILD

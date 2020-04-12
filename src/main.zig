@@ -50,8 +50,8 @@ pub fn main() void {
     defer debug.warn("closing window\n", .{});
     defer c.rl.CloseWindow();
 
-    const spritesheet = SpriteSheet.Digits;
-    const image = c.rl.LoadImage(spritesheet.uri.ptr);
+    const sheet = SpriteSheet.Digits;
+    const image = c.rl.LoadImage(sheet.uri.ptr);
     defer debug.warn("unloading image\n", .{});
     defer c.rl.UnloadImage(image);
 
@@ -60,57 +60,39 @@ pub fn main() void {
     defer c.rl.UnloadTexture(texture);
 
     const tint = rgbaToColor(0xffffffff);
+
+    const offset_x = 0;
+    const offset_y = 0;
+    const src_width = sheet.sprite_width;
+    const src_height = sheet.sprite_height;
+
     while (!c.rl.WindowShouldClose()) {
         c.rl.BeginDrawing();
         c.rl.ClearBackground(WindowConfig.Default.back_color);
 
-        const position = c.rl.Vector2 {
-            .x = 0.0,
-            .y = 0.0,
-        }; 
 
-        const rect = c.rl.Rectangle {
-            .x = 0.0,
-            .y = 0.0,
-            .width = 10,
-            .height = 10,
-        };
+        var col: usize = 0;
+        while (col < sheet.cols) : (col += 1) {
 
-        c.rl.ZifDrawTexture(texture, 0, 0, 10, 10, 0, 0, tint);
-
-        // Not compiling!
-        // c.rl.DrawTextureV(texture, position, tint);
-        // But below will work
-        c.rl.DrawTexture(texture, 0, 0, tint);
+            var row: usize = 0;
+            while (row < sheet.rows) : (row += 1) {
+                
+                const src_x = @intCast(c_int, col * src_width);
+                const src_y = @intCast(c_int, row * src_height);
  
+                const dst_x = offset_x + src_x;
+                const dst_y = offset_y + src_y;
+
+                c.rl.ZifDrawTexture(
+                    texture,
+                    src_x, src_y, src_width, src_height,
+                    dst_x, dst_y, 
+                    tint);
+
+            }
+        }
+
         c.rl.EndDrawing();
     }
 }
-
-//////////// KEEP //////////
-
-
-// const offset_x = 0;
-// const offset_y = 0;
-// var col: usize = 0;
-// var row: usize = 0;
-// while (col < spritesheet.cols) : (col += 1) {
-//     while (row < spritesheet.rows) : (row += 1) {
-//         
-//         const rectangle = c.rl.Rectangle {
-//             .x = @intToFloat(f32, col * spritesheet.sprite_width),
-//             .y = @intToFloat(f32, row * spritesheet.sprite_height),
-//             .width = spritesheet.sprite_width,
-//             .height = spritesheet.sprite_height,
-//         }; 
-
-//         const position = c.rl.Vector2 {
-//             .x = offset_x + rectangle.x, 
-//             .y = offset_y + rectangle.y 
-//         };
-
-//         // c.rl.DrawTextureRec(texture, rectangle, position, tint); 
-//     }
-// }
-
 

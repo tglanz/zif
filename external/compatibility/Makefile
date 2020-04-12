@@ -140,32 +140,32 @@ zif-compatibility/fast:
 	$(MAKE) -f CMakeFiles/zif-compatibility.dir/build.make CMakeFiles/zif-compatibility.dir/build
 .PHONY : zif-compatibility/fast
 
-src/compatibility.o: src/compatibility.c.o
+src/raylib-compatibility.o: src/raylib-compatibility.c.o
 
-.PHONY : src/compatibility.o
+.PHONY : src/raylib-compatibility.o
 
 # target to build an object file
-src/compatibility.c.o:
-	$(MAKE) -f CMakeFiles/zif-compatibility.dir/build.make CMakeFiles/zif-compatibility.dir/src/compatibility.c.o
-.PHONY : src/compatibility.c.o
+src/raylib-compatibility.c.o:
+	$(MAKE) -f CMakeFiles/zif-compatibility.dir/build.make CMakeFiles/zif-compatibility.dir/src/raylib-compatibility.c.o
+.PHONY : src/raylib-compatibility.c.o
 
-src/compatibility.i: src/compatibility.c.i
+src/raylib-compatibility.i: src/raylib-compatibility.c.i
 
-.PHONY : src/compatibility.i
+.PHONY : src/raylib-compatibility.i
 
 # target to preprocess a source file
-src/compatibility.c.i:
-	$(MAKE) -f CMakeFiles/zif-compatibility.dir/build.make CMakeFiles/zif-compatibility.dir/src/compatibility.c.i
-.PHONY : src/compatibility.c.i
+src/raylib-compatibility.c.i:
+	$(MAKE) -f CMakeFiles/zif-compatibility.dir/build.make CMakeFiles/zif-compatibility.dir/src/raylib-compatibility.c.i
+.PHONY : src/raylib-compatibility.c.i
 
-src/compatibility.s: src/compatibility.c.s
+src/raylib-compatibility.s: src/raylib-compatibility.c.s
 
-.PHONY : src/compatibility.s
+.PHONY : src/raylib-compatibility.s
 
 # target to generate assembly for a file
-src/compatibility.c.s:
-	$(MAKE) -f CMakeFiles/zif-compatibility.dir/build.make CMakeFiles/zif-compatibility.dir/src/compatibility.c.s
-.PHONY : src/compatibility.c.s
+src/raylib-compatibility.c.s:
+	$(MAKE) -f CMakeFiles/zif-compatibility.dir/build.make CMakeFiles/zif-compatibility.dir/src/raylib-compatibility.c.s
+.PHONY : src/raylib-compatibility.c.s
 
 # Help Target
 help:
@@ -176,9 +176,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... zif-compatibility"
-	@echo "... src/compatibility.o"
-	@echo "... src/compatibility.i"
-	@echo "... src/compatibility.s"
+	@echo "... src/raylib-compatibility.o"
+	@echo "... src/raylib-compatibility.i"
+	@echo "... src/raylib-compatibility.s"
 .PHONY : help
 
 
