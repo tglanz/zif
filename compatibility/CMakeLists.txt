@@ -22,7 +22,25 @@ target_include_directories(zif-compatibility PUBLIC
     ${PROJECT_SOURCE_DIR}/src/
     ${EXTERNAL_DIR}/raylib/include)
 
-add_custom_command(TARGET zif-compatibility
+find_library(raylib_lib raylib "${EXTERNAL_DIR}/raylib/lib")
+target_link_libraries(zif-compatibility PUBLIC ${raylib_lib})
+
+if(MSVC)
+    set_target_properties(zif-compatibility PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+    set_target_properties(zif-compatibility PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR})
+    set_target_properties(zif-compatibility PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR})
+endif()
+
+if (UNIX)
+    add_custom_command(TARGET zif-compatibility
                    POST_BUILD
                    COMMAND mkdir -p ${CMAKE_BINARY_DIR}/include
                    COMMAND cp ${PROJECT_SOURCE_DIR}/src/*.h ${CMAKE_BINARY_DIR}/include)
+elseif (WIN32)
+    set(src "${PROJECT_SOURCE_DIR}\\src\\*.h")
+    set(dst "${CMAKE_BINARY_DIR}/include")
+
+    add_custom_command(TARGET zif-compatibility
+                   POST_BUILD
+                   COMMAND xcopy /EIY \"${src}\" \"${dst}\") # please fuck windows' cmd
+endif()
