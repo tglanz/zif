@@ -1,64 +1,38 @@
-const debug = @import("std").debug;
+
 const builtin = @import("builtin");
 
 const std = @import("std");
+const fs = std.fs;
+const debug = std.debug;
 const Builder = std.build.Builder;
 const LibExeObjStep = std.build.LibExeObjStep;
 
+// were downloaded from https://github.com/raysan5/raylib/releases
+const raylib_binaries = "C:\\rl\\raylib-3.0.0-Win64-msvc15";
+
 pub fn build(b: *Builder) void {
     const mode = b.standardReleaseOptions();
-    
-    var exe = b.addExecutable("zif", "src/main.zig");
 
+    const exe = b.addExecutable("zif", "game/main.zig");
     exe.setBuildMode(mode);
 
-    switch (std.Target.current.os.tag) {
-        .linux => specificsForLinux(exe),
-        .windows => specificsForWindows(exe),
-        else => {},
-    }
+    const compatibility_flags =  &[_][]const u8{"-std=c99"};
+    exe.addIncludeDir("compatibility/");
+    exe.addCSourceFile("compatibility/compatibility-raylib.c", compatibility_flags);
 
-    linkWithCompatibility(exe);
-    linkWithRaylib(exe);
+    linkWithRaylib(b, exe);
 
-    const run = exe.run();
-    run.step.dependOn(b.getInstallStep());
-
-    const exec_step = b.step("exec", "execute");
-    exec_step.dependOn(&run.step);
+    b.default_step.dependOn(&exe.step);
+    b.installArtifact(exe);
 }
 
-fn specificsForWindows(step: *LibExeObjStep) void {
-    // TODO: copy dll to bin dir
-}
-
-fn specificsForLinux(step: *LibExeObjStep) void {
-    // support dynamic loading of shared objects
-    step.linkSystemLibrary("dl");
-
-    // not needed
-    // step.linkSystemLibrary("c");
-}
-
-fn linkWithCompatibility(step: *LibExeObjStep) void {
-    step.addLibPath("external/compatibility/lib");
-    step.linkSystemLibrary("zif-compatibility");
-    step.addIncludeDir("external/compatibility/include");
-}
-
-fn linkWithRaylib(step: *LibExeObjStep) void {
-    // lets link with raylib at external/raylib
-    // it will probably be wiser to link with system's libraries - 
-    // but for now, it's a good learning experience
-
-    // TODO: raylib location from environment variables / arguments ?
-
-    // addLibPath adds to libs_paths which each correspond to -L
-    // SEE: https://github.com/ziglang/zig/blob/master/lib/std/build.zig#L2075
-    step.addLibPath("external/raylib/lib");
+fn linkWithRaylib(builder: *Builder, step: *LibExeObjStep) void {
+    step.addIncludeDir(builder.fmt("{}/include", .{raylib_binaries}));
+    step.addLibPath(builder.fmt("{}/lib", .{raylib_binaries}));
     step.linkSystemLibrary("raylib");
 
-    // addIncludeDir adds to include_dirs which each correspond to -I
-    // SEE: https://github.com/ziglang/zig/blob/master/lib/std/build.zig#L2057
-    step.addIncludeDir("external/raylib/include");
+    if (std.Target.current.os.tag == .windows) {
+        const dll_path = builder.fmt("{}/bin/raylib.dll", .{raylib_binaries});
+        builder.installBinFile(dll_path, "raylib.dll");
+    }
 }

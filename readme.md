@@ -1,9 +1,12 @@
-# zif
 
-## build
+__build__
 
-    zig build
+    zig build --prefix out
 
-## run
+__run__
 
-    zig build exec
+    out/zifg/bin
+
+__build and run__
+
+    ./sbin/run.sh
